@@ -1,10 +1,8 @@
-/**************************
- * Dusan Bosnjak @pailhead
- **************************/
+
 
 // read per instance color from attribute, pass to varying
 
-module.exports = /* glsl */ `
+export default /* glsl */ `
 #ifdef USE_COLOR
 
 	vColor.xyz = color.xyz;

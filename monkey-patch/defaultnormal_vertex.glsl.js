@@ -1,8 +1,6 @@
-/**************************
- * Dusan Bosnjak @pailhead
- **************************/
 
-module.exports = /* glsl */ `
+
+export default /* glsl */ `
 #ifdef FLIP_SIDED
 
 	objectNormal = -objectNormal;

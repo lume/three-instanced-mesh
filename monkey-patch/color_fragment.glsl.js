@@ -1,10 +1,8 @@
-/**************************
- * Dusan Bosnjak @pailhead
- **************************/
+
 
 // multiply the color with per instance color if enabled
 
-module.exports = /* glsl */ `
+export default /* glsl */ `
 #ifdef USE_COLOR
 
 	diffuseColor.rgb *= vColor;

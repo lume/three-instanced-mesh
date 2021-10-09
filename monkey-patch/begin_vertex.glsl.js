@@ -1,10 +1,8 @@
-/**************************
- * Dusan Bosnjak @pailhead
- **************************/
+
 
 // transform vertices with the transform matrix
 
-module.exports = /* glsl */ `
+export default /* glsl */ `
 #ifndef INSTANCE_TRANSFORM
 
 vec3 transformed = vec3( position );

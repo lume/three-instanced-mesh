@@ -1,14 +1,11 @@
-/**************************
- * Dusan Bosnjak @pailhead
- **************************/
- 
-module.exports = function( THREE ){
+import { monkeyPatch as _monkeyPatch} from './monkey-patch.js'
+
+export function monkeyPatch( THREE ){
 
 const differentSignature = parseInt(THREE.REVISION) >= 96
 
 //monkeypatch shaders
-require('./monkey-patch.js')(THREE);
-
+_monkeyPatch(THREE);
 
 //depth mat
 var DEPTH_MATERIAL = new THREE.MeshDepthMaterial();
@@ -24,8 +21,8 @@ DEPTH_MATERIAL.defines = {
 };
 
 //distance mat
-var 
-	
+var
+
 	DISTANCE_SHADER = THREE.ShaderLib[ "distanceRGBA" ],
 	DISTANCE_UNIFORMS = THREE.UniformsUtils.clone( DISTANCE_SHADER.uniforms ),
 	DISTANCE_DEFINES = {
@@ -42,13 +39,13 @@ var
 ;
 
 //main class
-function InstancedMesh( 
-	bufferGeometry, 
-	material, 
-	numInstances, 
-	dynamic, 
-	colors, 
-	uniformScale 
+function InstancedMesh(
+	bufferGeometry,
+	material,
+	numInstances,
+	dynamic,
+	colors,
+	uniformScale
 ) {
 
 	THREE.Mesh.call( this , (new THREE.InstancedBufferGeometry()).copy( bufferGeometry ) ); //hacky for now
@@ -69,11 +66,11 @@ function InstancedMesh(
 	 * WebGLRenderer injects stuff like this
 	 */
 	this.material = material.clone();
- 	
+
 	this.frustumCulled = false; //you can uncheck this if you generate your own bounding info
 
 	//make it work with depth effects
-	this.customDepthMaterial = DEPTH_MATERIAL; 
+	this.customDepthMaterial = DEPTH_MATERIAL;
 
 	this.customDistanceMaterial = DISTANCE_MATERIAL;
 
@@ -88,32 +85,32 @@ Object.defineProperties( InstancedMesh.prototype , {
 
 	'material': {
 
-		set: function( m ){ 
+		set: function( m ){
 
 			/**
-			 * whenever a material is set, decorate it, 
-			 * if a material used with regular geometry is passed, 
+			 * whenever a material is set, decorate it,
+			 * if a material used with regular geometry is passed,
 			 * it will mutate it which is bad mkay
 			 *
 			 * either flag Material with these instance properties:
-			 * 
+			 *
 			 *  "i want to create a RED PLASTIC material that will
 			 *   be INSTANCED and i know it will be used on clones
 			 *   that are known to be UNIFORMly scaled"
 			 *  (also figure out where dynamic fits here)
-			 *  
+			 *
 			 * or check here if the material has INSTANCE_TRANSFORM
 			 * define set, if not, clone, document that it breaks reference
 			 * or do a shallow copy or something
-			 * 
+			 *
 			 * or something else?
 			 */
 			m = m.clone();
 
 			if ( m.defines ) {
-				
+
 				m.defines.INSTANCE_TRANSFORM = '';
-				
+
 				if ( this._uniformScale ) m.defines.INSTANCE_UNIFORM = ''; //an optimization, should avoid doing an expensive matrix inverse in the shader
 				else delete m.defines['INSTANCE_UNIFORM'];
 
@@ -121,8 +118,8 @@ Object.defineProperties( InstancedMesh.prototype , {
 				else delete m.defines['INSTANCE_COLOR'];
 			}
 
-			else{ 
-			
+			else{
+
 				m.defines = { INSTANCE_TRANSFORM: '' };
 
 				if ( this._uniformScale ) m.defines.INSTANCE_UNIFORM = '';
@@ -140,7 +137,7 @@ Object.defineProperties( InstancedMesh.prototype , {
 	//force new attributes to be created when set?
 	'numInstances': {
 
-		set: function( v ){ 
+		set: function( v ){
 
 			this._numInstances = v;
 
@@ -155,10 +152,10 @@ Object.defineProperties( InstancedMesh.prototype , {
 	},
 
 	//do some auto-magic when BufferGeometry is set
-	//TODO: account for Geometry, or change this approach completely 
+	//TODO: account for Geometry, or change this approach completely
 	'geometry':{
 
-		set: function( g ){ 
+		set: function( g ){
 
 			//if its not already instanced attach buffers
 			if ( !!g.attributes.instancePosition ) {
@@ -167,9 +164,9 @@ Object.defineProperties( InstancedMesh.prototype , {
 
 				this._setAttributes();
 
-			} 
+			}
 
-			else 
+			else
 
 				this._geometry = g;
 
@@ -209,10 +206,10 @@ InstancedMesh.prototype.setColorAt = function ( index , color ) {
 
 	}
 
-	this.geometry.attributes.instanceColor.setXYZ( 
-		index , 
-		Math.floor( color.r * 255 ), 
-		Math.floor( color.g * 255 ), 
+	this.geometry.attributes.instanceColor.setXYZ(
+		index ,
+		Math.floor( color.r * 255 ),
+		Math.floor( color.g * 255 ),
 		Math.floor( color.b * 255 )
 	);
 
@@ -238,13 +235,13 @@ InstancedMesh.prototype.getPositionAt = function( index , position ){
 
 	index *= 3;
 
-	return position ? 
+	return position ?
 
 		position.set( arr[index++], arr[index++], arr[index] ) :
 
 		new THREE.Vector3(  arr[index++], arr[index++], arr[index] )
 	;
-	
+
 };
 
 InstancedMesh.prototype.getQuaternionAt = function ( index , quat ) {
@@ -253,13 +250,13 @@ InstancedMesh.prototype.getQuaternionAt = function ( index , quat ) {
 
 	index = index << 2;
 
-	return quat ? 
+	return quat ?
 
 		quat.set(       arr[index++], arr[index++], arr[index++], arr[index] ) :
 
 		new THREE.Quaternion( arr[index++], arr[index++], arr[index++], arr[index] )
 	;
-	
+
 };
 
 InstancedMesh.prototype.getScaleAt = function ( index , scale ) {
@@ -268,7 +265,7 @@ InstancedMesh.prototype.getScaleAt = function ( index , scale ) {
 
 	index *= 3;
 
-	return scale ? 
+	return scale ?
 
 		scale.set(   arr[index++], arr[index++], arr[index] ) :
 
@@ -292,10 +289,10 @@ InstancedMesh.prototype.getColorAt = (function(){
 		}
 
 		var arr = this.geometry.attributes.instanceColor.array;
-		
+
 		index *= 3;
 
-		return color ? 
+		return color ?
 
 			color.setRGB( arr[index++] * inv255, arr[index++] * inv255, arr[index] * inv255 ) :
 
@@ -353,13 +350,13 @@ InstancedMesh.prototype.needsUpdate = function( attribute ){
 			this.geometry.attributes.instanceOpacity.needsUpdate =    true;
 
 			break;
-			
+
 		default:
 
 			this.geometry.attributes.instancePosition.needsUpdate =   true;
 			this.geometry.attributes.instanceQuaternion.needsUpdate = true;
 			this.geometry.attributes.instanceScale.needsUpdate =      true;
-		
+
 			if(this._colors){
 				this.geometry.attributes.instanceColor.needsUpdate =   true;
 				this.geometry.attributes.instanceOpacity.needsUpdate = true;
@@ -374,26 +371,26 @@ InstancedMesh.prototype.needsUpdate = function( attribute ){
 InstancedMesh.prototype._setAttributes = function(){
 
 	var normalized = true
-	var meshPerAttribute = 1 
+	var meshPerAttribute = 1
 	var vec4Size = 4
 	var vec3Size = 3
 
 	var attributes = {
 		instancePosition: [
-			new Float32Array( this.numInstances * vec3Size ), 
-			vec3Size, 
-			!normalized, 
+			new Float32Array( this.numInstances * vec3Size ),
+			vec3Size,
+			!normalized,
 			meshPerAttribute,
 		],
 		instanceQuaternion: [
-			new Float32Array( this.numInstances * vec4Size ), 
-			vec4Size, 
-			!normalized, 
+			new Float32Array( this.numInstances * vec4Size ),
+			vec4Size,
+			!normalized,
 			meshPerAttribute,
 		],
 		instanceScale: [
-			new Float32Array( this.numInstances * vec3Size ), 
-			vec3Size, 
+			new Float32Array( this.numInstances * vec3Size ),
+			vec3Size,
 			!normalized,
 			meshPerAttribute,
 		]
@@ -401,15 +398,15 @@ InstancedMesh.prototype._setAttributes = function(){
 
 	if ( this._colors ){
 		attributes.instanceColor = [
-			new Uint8Array( this.numInstances * vec3Size ), 
-			vec3Size, 
-			normalized, 
+			new Uint8Array( this.numInstances * vec3Size ),
+			vec3Size,
+			normalized,
 			meshPerAttribute,
 		],
 		attributes.instanceOpacity = [
-			new Float32Array( this.numInstances ).fill( 1 ), 
-			1, 
-			normalized, 
+			new Float32Array( this.numInstances ).fill( 1 ),
+			1,
+			normalized,
 			meshPerAttribute,
 		]
 	}
@@ -423,7 +420,7 @@ InstancedMesh.prototype._setAttributes = function(){
 			attribute = new THREE.InstancedBufferAttribute(a[0],a[1],a[3])
 			attribute.normalized = a[2]
 		}
-			
+
 		attribute.dynamic = this._dynamic
 		if ( THREE.REVISION >= 110 ) this.geometry.setAttribute(name, attribute)
 		else this.geometry.addAttribute(name, attribute)

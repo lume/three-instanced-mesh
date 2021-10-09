@@ -1,1 +1,3 @@
-globalThis.InstancedMesh = require("./index")(THREE);
+import { monkeyPatch } from "./index.js";
+
+globalThis.InstancedMesh = monkeyPatch(THREE);

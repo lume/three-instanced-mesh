@@ -1,10 +1,8 @@
-/**************************
- * Dusan Bosnjak @pailhead
- **************************/
+
 
 // add fragment varying if feature enabled
 
-module.exports = /* glsl */ `
+export default /* glsl */ `
 
 #ifdef USE_COLOR
 

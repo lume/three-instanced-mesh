@@ -1,8 +1,6 @@
-/**************************
- * Dusan Bosnjak @pailhead
- **************************/
 
-module.exports = /* glsl */ `
+
+export default /* glsl */ `
 #ifdef INSTANCE_TRANSFORM
 
 mat3 inverse(mat3 m) {
