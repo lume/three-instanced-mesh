@@ -1,6 +1,6 @@
 {
   "name": "@lume/three-instanced-mesh",
-  "version": "0.96.3",
+  "version": "0.96.4",
   "description": "Scene graph level abstraction for three.js InstancedBufferGeometry",
   "type": "module",
   "main": "index.js",
