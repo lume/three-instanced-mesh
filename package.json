@@ -10,9 +10,14 @@
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "example": "npm run build && serve .",
-    "prepare": "npm run build",
     "test": "npm run test:esm",
-    "test:esm": "webpack --config esm-test.webpack.config.js"
+    "test:esm": "webpack --config esm-test.webpack.config.js",
+    "prepare": "npm run build",
+	"version": "npm test",
+	"postversion": "npm publish && git push --follow-tags",
+	"release:patch": "npm version patch -m 'v%s'",
+	"release:minor": "npm version minor -m 'v%s'",
+	"release:major": "npm version major -m 'v%s'"
   },
   "repository": {
     "type": "git",
