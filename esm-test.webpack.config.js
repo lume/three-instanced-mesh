@@ -5,7 +5,7 @@
 export default {
   entry: './build.js',
   output: {
-    filename: 'ros3djs-esm-test.js',
+    filename:  `esm-test-${Math.random()}.js`,
     path: '/tmp'
   },
   mode: 'development',
