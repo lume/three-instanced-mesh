@@ -4,19 +4,18 @@
 
 // add fragment varying if feature enabled
 
-module.exports = [
+module.exports = /* glsl */ `
 
-"#ifdef USE_COLOR",
+#ifdef USE_COLOR
 
-	"varying vec3 vColor;",
+	varying vec3 vColor;
 
-"#endif",
+#endif
 
-"#if defined( INSTANCE_COLOR )",
+#if defined( INSTANCE_COLOR )
 		
-	"varying vec3 vInstanceColor;",
-	"varying float vInstanceOpacity;",
+	varying vec3 vInstanceColor;
+	varying float vInstanceOpacity;
 		
-"#endif"
-
-].join("\n")
+#endif
+`;
