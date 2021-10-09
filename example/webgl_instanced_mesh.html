@@ -34,7 +34,7 @@
 		<script src="../node_modules/three/examples/js/utils/ShadowMapViewer.js"></script>
 		<script src="../node_modules/three/examples/js/Detector.js"></script>
 		<script src="../node_modules/three/examples/js/libs/stats.min.js"></script>
-		<script src="../build.js"></script>
+		<script src="../global.min.js"></script>
 
 		<script>
 			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
@@ -48,7 +48,7 @@
 			var cache = {};
 			var options;
 			var trsCache;
-			
+
 			init();
 			animate();
 			function init() {
@@ -119,14 +119,14 @@
 				document.body.appendChild( stats.dom );
 			}
 			function getKey(){
-				
+
 				if( arguments.length ){
-					
+
 					var key = '';
 					for( var i = 0 ; i < arguments.length ; i ++ )
 						key += i < 2 ? arguments[i] : !!arguments[i];
 					return key;
-				} 
+				}
 				return options.geometry + options.instanceNumber + options.dynamic + options.uniformScale + options.color ;
 			}
 			function initExample(){
@@ -141,16 +141,16 @@
 					debug: function(){}
 				};
 				var geometries = {
-					box: new THREE.BoxBufferGeometry(1,1,1), 
-					sphere: new THREE.SphereBufferGeometry(1,12,8), 
+					box: new THREE.BoxBufferGeometry(1,1,1),
+					sphere: new THREE.SphereBufferGeometry(1,12,8),
 					cylinder: new THREE.CylinderBufferGeometry(.3,.3,1,8)
-				};	
+				};
 				var instanceNumbers = [ 200 , 1000 , 5000 , 20000 , 100000 ];
 				var totalTriangleNumber = {};
 				var geometriesTriNum = {};
 				//different built-in materials
 				var materials = {
-					
+
 					phong: new THREE.MeshPhongMaterial( {
                         transparent: true,
                         opacity: 1,
@@ -164,7 +164,7 @@
                         opacity: 1,
 						color: 0xffff00
 					}),
-					
+
 					standard: new THREE.MeshStandardMaterial({
                         transparent: true,
                         opacity: 1,
@@ -173,32 +173,32 @@
 				};
 				//calculate how many trinagles will be pushed
 				for( var g in geometries ){
-					
+
 					totalTriangleNumber[ g ] = [];
 					var n = geometriesTriNum[ g ] = geometries[ g ].index.count/3;
 					instanceNumbers.forEach( function( num ) { totalTriangleNumber[ g ].push( n * num ); });
-					
+
 				}
-				
+
 				//mesh wrapper
 				objectWrapper = new THREE.Object3D();
-				
+
 				objectWrapper.position.y = 3;
 				scene.add( objectWrapper );
 				//create mesh cache
-				//to avoid matrix decomposition 
-				
+				//to avoid matrix decomposition
+
 				trsCache = [];
 				var pi2 = Math.PI * 2;
-				
+
 				console.log( 'Initializing object cache for 100k objects...');
 				console.time( 'Object cache initialized.');
 				for ( var i = 0 ; i < instanceNumbers[ 4 ] ; i ++ ){
-					var dummyObj = new THREE.Object3D(); //will hold position , rotation , scale 
+					var dummyObj = new THREE.Object3D(); //will hold position , rotation , scale
 					let rot = new THREE.Euler(  Math.random() * pi2 , Math.random() * pi2 , Math.random() * pi2 );
-					
+
 					let quat = new THREE.Quaternion().setFromEuler( rot );
-					
+
 					trsCache.push({
 						position: new THREE.Vector3( Math.random() * 2 - 1 , 0 , Math.random() * 2 - 1 ).multiplyScalar( 14 ),
 						rotation: rot,
@@ -210,29 +210,29 @@
 				console.timeEnd( 'Object cache initialized.');
 				console.log( 'Initializing instanced mesh permutations...');
 				console.time( 'Instanced mesh permutations initialized.');
-				
+
 				var _color = new THREE.Color();
 
 				instanceNumbers.forEach( function( iNum ){
 					for ( var g in geometries ){
 						for ( var uScale = 0 ; uScale < 2 ; uScale ++ ){
-						
+
 							for ( var color = 0 ; color < 2 ; color ++ ){
 								for ( var dynamic = 0 ; dynamic < 2 ; dynamic ++ ){
 									var instancedMesh = cache[ getKey( g , iNum , dynamic , uScale , color ) ] = new InstancedMesh(
 										//provide geometry
-										geometries[ g ], 		
+										geometries[ g ],
 										//provide material
-										materials[ options.material ],	
+										materials[ options.material ],
 										//how many instances to allocate
-										iNum, 								
-										
+										iNum,
+
 										//will the position attributes be changed
-										!!dynamic, 
+										!!dynamic,
 										//should there be per instance color variation
 										!!color,
-										
-	 									//is the scale known to be uniform, will do less shader work, improperly applying this will result in wrong shading 
+
+	 									//is the scale known to be uniform, will do less shader work, improperly applying this will result in wrong shading
 										!!uScale
 									);
 									var ss = new THREE.Vector3(1,1,1);
@@ -240,7 +240,7 @@
 										instancedMesh.setPositionAt( 	i , trsCache[ i ].position );
 										instancedMesh.setQuaternionAt( 	i , trsCache[ i ].quaternion );
 										instancedMesh.setScaleAt( 		i , uScale ? ss : trsCache[ i ].scale );
-										
+
 										if ( color ) {
 											_color.setHSL( Math.random() , 0.5 , 0.5 );
 											instancedMesh.setColorAt( i , _color );
@@ -265,7 +265,7 @@
 				onChangeMesh();
 				function onChangeMesh(){
 					for ( var c in cache ) cache[c].visible = false;
-					
+
 					cache[ getKey() ].visible = true;
 					console.log( 'key' , getKey() );
 					console.log( 'triangles' , totalTriangleNumber[ options.geometry ][ instanceNumbers.indexOf( parseInt(options.instanceNumber) )].toLocaleString() );
@@ -273,7 +273,7 @@
 				function onChangeMaterial(){
 					for ( var m in cache ) cache[ m ].material = materials[ options.material ];
 					tester.material = materials[ options.material ];
-				
+
 				}
 				tester = new THREE.Mesh( geometries.box , materials[ options.material ] );
 				tester.position.set( 18 , 0 , 18 );
@@ -282,7 +282,7 @@
 				var gui = new dat.GUI();
 				gui.add( options, 'material' , Object.keys( materials ) ).onChange( onChangeMaterial );
 				gui.add( options, 'instanceNumber' , instanceNumbers ).onChange( onChangeMesh );
-				
+
 				gui.add( options, 'geometry' , Object.keys( geometries ) ).onChange( onChangeMesh );
 				gui.add( options, 'dynamic' ).onChange( onChangeMesh );
 				gui.add( options, 'uniformScale' ).onChange( onChangeMesh );
@@ -297,7 +297,7 @@
 						cache[ getKey() ].getScaleAt( 15 ),
 						cache[ getKey() ].getColorAt( 15 ),
 						cache[ getKey() ].getOpacityAt( 15 )
-					)	
+					)
 				})
 				gui.open();
 			}
@@ -312,7 +312,7 @@
 					o.rotation.z += o.scale.z * dt;
 					currentMesh.setQuaternionAt( i , o.quaternion.setFromEuler( o.rotation ) );
 				}
-				
+
 				tester.rotation.copy(trsCache[0].rotation);
 				currentMesh.needsUpdate( 'quaternion' );
 			}

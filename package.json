@@ -8,7 +8,7 @@
     "example": "example"
   },
   "scripts": {
-    "build": "webpack --config webpack.config.js",
+    "build": "webpack --config webpack.config.js --mode=production",
     "example": "npm run build && serve .",
     "test": "npm run test:esm",
     "test:esm": "webpack --config esm-test.webpack.config.js",

@@ -1,10 +1,9 @@
 import path from 'path'
 
 export default {
-  entry: './build.js',
+  entry: './global.esm.js',
   output: {
-    filename: 'build.js',
+    filename: 'global.min.js',
     path: path.resolve('.')
   },
-  mode: 'development',
 };

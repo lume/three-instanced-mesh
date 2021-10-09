@@ -3,7 +3,7 @@
 // cases like missing `.js` etensions in import specifiers, etc.
 
 export default {
-  entry: './build.js',
+  entry: './global.esm.js',
   output: {
     filename:  `esm-test-${Math.random()}.js`,
     path: '/tmp'
