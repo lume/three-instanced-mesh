@@ -1,9 +1,10 @@
-bower_components
-node_modules
-*.log
-.DS_Store
-bundle.js
-test
-test.js
-demo/
-bower.json
+# Ignore everything,
+/**/*
+
+# but include these folders
+!/src/**/*
+!/monkey-patch/**/*
+!/build.js
+!/global.js
+!/index.js
+!/monkey-patch.js
