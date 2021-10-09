@@ -4,7 +4,6 @@
 # but include these folders
 !/src/**/*
 !/monkey-patch/**/*
-!/build.js
-!/global.js
+!/global.*
 !/index.js
 !/monkey-patch.js
