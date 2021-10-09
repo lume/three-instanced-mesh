@@ -219,7 +219,7 @@
 						
 							for ( var color = 0 ; color < 2 ; color ++ ){
 								for ( var dynamic = 0 ; dynamic < 2 ; dynamic ++ ){
-									var instancedMesh = cache[ getKey( g , iNum , dynamic , uScale , color ) ] = new THREE.InstancedMesh(
+									var instancedMesh = cache[ getKey( g , iNum , dynamic , uScale , color ) ] = new InstancedMesh(
 										//provide geometry
 										geometries[ g ], 		
 										//provide material

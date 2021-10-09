@@ -1,1 +1,1 @@
-require('./index')(THREE)
+globalThis.InstancedMesh = require("./index")(THREE);
