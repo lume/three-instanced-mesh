@@ -1,6 +1,6 @@
 {
   "name": "@lume/three-instanced-mesh",
-  "version": "0.96.2",
+  "version": "0.96.3",
   "description": "Scene graph level abstraction for three.js InstancedBufferGeometry",
   "type": "module",
   "main": "index.js",
@@ -13,11 +13,11 @@
     "test": "npm run test:esm",
     "test:esm": "webpack --config esm-test.webpack.config.js",
     "prepare": "npm run build",
-	"version": "npm test",
-	"postversion": "npm publish --access public && git push --follow-tags",
-	"release:patch": "npm version patch -m 'v%s'",
-	"release:minor": "npm version minor -m 'v%s'",
-	"release:major": "npm version major -m 'v%s'"
+    "version": "npm test",
+    "postversion": "npm publish --access public && git push --follow-tags",
+    "release:patch": "npm version patch -m 'v%s'",
+    "release:minor": "npm version minor -m 'v%s'",
+    "release:major": "npm version major -m 'v%s'"
   },
   "repository": {
     "type": "git",
