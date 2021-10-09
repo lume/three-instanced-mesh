@@ -14,7 +14,7 @@
     "test:esm": "webpack --config esm-test.webpack.config.js",
     "prepare": "npm run build",
 	"version": "npm test",
-	"postversion": "npm publish && git push --follow-tags",
+	"postversion": "npm publish --access public && git push --follow-tags",
 	"release:patch": "npm version patch -m 'v%s'",
 	"release:minor": "npm version minor -m 'v%s'",
 	"release:major": "npm version major -m 'v%s'"
