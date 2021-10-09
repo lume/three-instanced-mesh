@@ -4,19 +4,17 @@
 
 // read per instance color from attribute, pass to varying
 
-module.exports = [
+module.exports = /* glsl */ `
+#ifdef USE_COLOR
 
-"#ifdef USE_COLOR",
+	vColor.xyz = color.xyz;
 
-	"vColor.xyz = color.xyz;",
+#endif
 
-"#endif",
-
-"#if defined( INSTANCE_COLOR ) && defined( INSTANCE_TRANSFORM )",
+#if defined( INSTANCE_COLOR ) && defined( INSTANCE_TRANSFORM )
 		
-	"vInstanceColor = instanceColor;",
-	"vInstanceOpacity = instanceOpacity;",
+	vInstanceColor = instanceColor;
+	vInstanceOpacity = instanceOpacity;
 		
-"#endif",
-
-].join("\n")
+#endif
+`;

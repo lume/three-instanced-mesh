@@ -2,38 +2,36 @@
  * Dusan Bosnjak @pailhead
  **************************/
 
-module.exports = [
+module.exports = /* glsl */ `
+#ifdef FLIP_SIDED
 
-"#ifdef FLIP_SIDED",
+	objectNormal = -objectNormal;
 
-	"objectNormal = -objectNormal;",
+#endif
 
-"#endif",
+#ifndef INSTANCE_TRANSFORM
 
-"#ifndef INSTANCE_TRANSFORM",
+	vec3 transformedNormal = normalMatrix * objectNormal;
 
-	"vec3 transformedNormal = normalMatrix * objectNormal;",
+#else
 
-"#else",
+	#ifndef INSTANCE_MATRIX 
 
-	"#ifndef INSTANCE_MATRIX ",
+		mat4 _instanceMatrix = getInstanceMatrix();
 
-		"mat4 _instanceMatrix = getInstanceMatrix();",
+		#define INSTANCE_MATRIX
 
-		"#define INSTANCE_MATRIX",
+	#endif
 
-	"#endif",
-
-	"#ifndef INSTANCE_UNIFORM",
+	#ifndef INSTANCE_UNIFORM
 	
-		"vec3 transformedNormal =  transposeMat3( inverse( mat3( modelViewMatrix * _instanceMatrix ) ) ) * objectNormal ;",
+		vec3 transformedNormal =  transposeMat3( inverse( mat3( modelViewMatrix * _instanceMatrix ) ) ) * objectNormal ;
 
-	"#else",
+	#else
 
-		"vec3 transformedNormal = ( modelViewMatrix * _instanceMatrix * vec4( objectNormal , 0.0 ) ).xyz;",
+		vec3 transformedNormal = ( modelViewMatrix * _instanceMatrix * vec4( objectNormal , 0.0 ) ).xyz;
 
-	"#endif",
+	#endif
 
-"#endif"
-
-].join("\n");
+#endif
+`;
